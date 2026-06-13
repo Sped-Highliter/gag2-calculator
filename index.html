@@ -10,7 +10,7 @@
     margin:0;
     padding:0;
     box-sizing:border-box;
-    font-family:Segoe UI, sans-serif;
+    font-family:Arial, sans-serif;
 }
 
 body{
@@ -18,35 +18,34 @@ body{
     display:flex;
     justify-content:center;
     align-items:center;
-    background:linear-gradient(135deg,#0f172a,#1e293b,#0f172a);
+    background:linear-gradient(135deg,#0f172a,#1e293b);
     color:white;
 }
 
 .container{
     width:90%;
-    max-width:700px;
+    max-width:600px;
     background:rgba(255,255,255,0.08);
-    backdrop-filter:blur(15px);
-    border:1px solid rgba(255,255,255,0.15);
+    backdrop-filter:blur(10px);
     border-radius:20px;
     padding:30px;
-    box-shadow:0 0 30px rgba(0,0,0,0.4);
+    box-shadow:0 0 25px rgba(0,0,0,0.4);
 }
 
 h1{
     text-align:center;
     margin-bottom:25px;
-    font-size:2rem;
 }
 
 label{
     display:block;
     margin-top:15px;
     margin-bottom:5px;
-    font-weight:600;
+    font-weight:bold;
 }
 
-input, select{
+input,
+select{
     width:100%;
     padding:12px;
     border:none;
@@ -56,66 +55,28 @@ input, select{
     font-size:16px;
 }
 
-.mutations{
-    display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(120px,1fr));
-    gap:10px;
-    margin-top:10px;
-}
-
-.mut-btn{
-    padding:12px;
-    border:none;
-    border-radius:12px;
-    background:#1e293b;
-    color:white;
-    cursor:pointer;
-    transition:.2s;
-}
-
-.mut-btn:hover{
-    transform:translateY(-2px);
-}
-
-.mut-btn.active{
-    background:#22c55e;
-}
-
-.buttons{
-    display:flex;
-    gap:10px;
-    margin-top:20px;
-}
-
-button.action{
-    flex:1;
+button{
+    width:100%;
     padding:14px;
+    margin-top:20px;
     border:none;
-    border-radius:12px;
-    cursor:pointer;
+    border-radius:10px;
+    background:#22c55e;
+    color:white;
     font-size:16px;
     font-weight:bold;
+    cursor:pointer;
+    transition:0.2s;
 }
 
-.calc{
-    background:#22c55e;
-    color:white;
-}
-
-.reset{
-    background:#ef4444;
-    color:white;
-}
-
-#selected{
-    margin-top:15px;
-    color:#94a3b8;
+button:hover{
+    transform:translateY(-2px);
 }
 
 #result{
     margin-top:25px;
     text-align:center;
-    font-size:2rem;
+    font-size:28px;
     font-weight:bold;
     color:#22c55e;
 }
@@ -128,40 +89,33 @@ button.action{
 
 <h1>🌱 Grow a Garden 2 Calculator</h1>
 
-<label>Crop</label>
+<label for="crop">Crop</label>
 <select id="crop">
     <option value="2">Bamboo</option>
     <option value="22.44">Mushroom</option>
 </select>
 
-<label>Weight (KG)</label>
-<input type="number" id="kg" step="0.01" placeholder="Enter weight">
+<label for="kg">Weight (KG)</label>
+<input
+    type="number"
+    id="kg"
+    step="0.01"
+    placeholder="Enter weight"
+>
 
-<label>Mutations</label>
+<label for="mut">Mutation</label>
+<select id="mut">
+    <option value="1">None (1x)</option>
+    <option value="4">Chained (4x)</option>
+    <option value="10">Gold (10x)</option>
+    <option value="25">Starstruck (25x)</option>
+    <option value="30">Rainbow (30x)</option>
+    <option value="40">Frozen (40x)</option>
+    <option value="70">Electric (70x)</option>
+    <option value="80">Bloodlit (80x)</option>
+</select>
 
-<div class="mutations">
-    <button class="mut-btn" data-value="4">Chained 4x</button>
-    <button class="mut-btn" data-value="10">Gold 10x</button>
-    <button class="mut-btn" data-value="25">Starstruck 25x</button>
-    <button class="mut-btn" data-value="30">Rainbow 30x</button>
-    <button class="mut-btn" data-value="40">Frozen 40x</button>
-    <button class="mut-btn" data-value="70">Electric 70x</button>
-    <button class="mut-btn" data-value="80">Bloodlit 80x</button>
-</div>
-
-<div id="selected">
-Selected Mutations: None
-</div>
-
-<div class="buttons">
-    <button class="action calc" onclick="calc()">
-        Calculate
-    </button>
-
-    <button class="action reset" onclick="resetCalc()">
-        Reset
-    </button>
-</div>
+<button onclick="calc()">Calculate</button>
 
 <div id="result">
 Result: 0 shekles
@@ -171,42 +125,6 @@ Result: 0 shekles
 
 <script>
 
-let selectedMutations = [];
-
-document.querySelectorAll(".mut-btn").forEach(btn => {
-
-    btn.addEventListener("click", () => {
-
-        btn.classList.toggle("active");
-
-        const value = Number(btn.dataset.value);
-
-        if(selectedMutations.includes(value)){
-            selectedMutations =
-                selectedMutations.filter(v => v !== value);
-        }
-        else{
-            selectedMutations.push(value);
-        }
-
-        updateSelected();
-    });
-
-});
-
-function updateSelected(){
-
-    if(selectedMutations.length === 0){
-        document.getElementById("selected").innerText =
-            "Selected Mutations: None";
-        return;
-    }
-
-    document.getElementById("selected").innerText =
-        "Selected Mutations: " +
-        selectedMutations.map(x => x + "x").join(", ");
-}
-
 function calc(){
 
     let base =
@@ -215,46 +133,25 @@ function calc(){
     let kg =
         parseFloat(document.getElementById("kg").value);
 
+    let mut =
+        parseFloat(document.getElementById("mut").value);
+
     if(isNaN(kg) || kg <= 0){
 
         document.getElementById("result").innerText =
-            "Enter a valid weight.";
+            "Please enter a valid weight.";
 
         return;
     }
 
-    let mutationTotal = 1;
-
-    selectedMutations.forEach(m => {
-        mutationTotal += m;
-    });
-
     let units = kg / 0.01;
 
-    let value =
-        units *
-        base *
-        mutationTotal;
+    let value = units * base * mut;
 
     document.getElementById("result").innerText =
         "Result: " +
         Math.ceil(value).toLocaleString() +
         " shekles";
-}
-
-function resetCalc(){
-
-    document.getElementById("kg").value = "";
-
-    selectedMutations = [];
-
-    document.querySelectorAll(".mut-btn")
-        .forEach(btn => btn.classList.remove("active"));
-
-    updateSelected();
-
-    document.getElementById("result").innerText =
-        "Result: 0 shekles";
 }
 
 </script>
