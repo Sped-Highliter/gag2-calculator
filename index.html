@@ -1,69 +1,132 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>GAG2 Calculator</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Grow a Garden 2 Calculator</title>
 
 <style>
-body {
-    font-family: Arial;
-    background: #0f172a;
-    color: white;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Segoe UI, sans-serif;
 }
 
-.container {
-    background: #1e293b;
-    padding: 20px;
-    border-radius: 12px;
-    width: 320px;
-    box-shadow: 0 0 15px black;
+body{
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background:linear-gradient(135deg,#0f172a,#1e293b,#0f172a);
+    color:white;
 }
 
-h2 {
-    text-align: center;
+.container{
+    width:90%;
+    max-width:700px;
+    background:rgba(255,255,255,0.08);
+    backdrop-filter:blur(15px);
+    border:1px solid rgba(255,255,255,0.15);
+    border-radius:20px;
+    padding:30px;
+    box-shadow:0 0 30px rgba(0,0,0,0.4);
 }
 
-input, select {
-    width: 100%;
-    padding: 8px;
-    margin: 6px 0;
-    border-radius: 6px;
-    border: none;
+h1{
+    text-align:center;
+    margin-bottom:25px;
+    font-size:2rem;
 }
 
-button {
-    width: 100%;
-    padding: 10px;
-    margin-top: 10px;
-    background: #22c55e;
-    border: none;
-    border-radius: 6px;
-    font-weight: bold;
-    cursor: pointer;
+label{
+    display:block;
+    margin-top:15px;
+    margin-bottom:5px;
+    font-weight:600;
 }
 
-button:hover {
-    background: #16a34a;
+input, select{
+    width:100%;
+    padding:12px;
+    border:none;
+    border-radius:10px;
+    background:#1e293b;
+    color:white;
+    font-size:16px;
 }
 
-.result {
-    margin-top: 10px;
-    text-align: center;
-    font-size: 18px;
+.mutations{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(120px,1fr));
+    gap:10px;
+    margin-top:10px;
+}
+
+.mut-btn{
+    padding:12px;
+    border:none;
+    border-radius:12px;
+    background:#1e293b;
+    color:white;
+    cursor:pointer;
+    transition:.2s;
+}
+
+.mut-btn:hover{
+    transform:translateY(-2px);
+}
+
+.mut-btn.active{
+    background:#22c55e;
+}
+
+.buttons{
+    display:flex;
+    gap:10px;
+    margin-top:20px;
+}
+
+button.action{
+    flex:1;
+    padding:14px;
+    border:none;
+    border-radius:12px;
+    cursor:pointer;
+    font-size:16px;
+    font-weight:bold;
+}
+
+.calc{
+    background:#22c55e;
+    color:white;
+}
+
+.reset{
+    background:#ef4444;
+    color:white;
+}
+
+#selected{
+    margin-top:15px;
+    color:#94a3b8;
+}
+
+#result{
+    margin-top:25px;
+    text-align:center;
+    font-size:2rem;
+    font-weight:bold;
+    color:#22c55e;
 }
 </style>
-
 </head>
 
 <body>
 
 <div class="container">
 
-<h2>GAG2 Calculator</h2>
+<h1>🌱 Grow a Garden 2 Calculator</h1>
 
 <label>Crop</label>
 <select id="crop">
@@ -71,32 +134,129 @@ button:hover {
     <option value="22.44">Mushroom</option>
 </select>
 
-<label>KG</label>
-<input type="number" id="kg" step="0.01">
+<label>Weight (KG)</label>
+<input type="number" id="kg" step="0.01" placeholder="Enter weight">
 
-<label>Mutation Multiplier</label>
-<input type="number" id="mut" step="0.01">
+<label>Mutations</label>
 
-<button onclick="calc()">Calculate</button>
+<div class="mutations">
+    <button class="mut-btn" data-value="4">Chained 4x</button>
+    <button class="mut-btn" data-value="10">Gold 10x</button>
+    <button class="mut-btn" data-value="25">Starstruck 25x</button>
+    <button class="mut-btn" data-value="30">Rainbow 30x</button>
+    <button class="mut-btn" data-value="40">Frozen 40x</button>
+    <button class="mut-btn" data-value="70">Electric 70x</button>
+    <button class="mut-btn" data-value="80">Bloodlit 80x</button>
+</div>
 
-<div class="result" id="result">Result: </div>
+<div id="selected">
+Selected Mutations: None
+</div>
+
+<div class="buttons">
+    <button class="action calc" onclick="calc()">
+        Calculate
+    </button>
+
+    <button class="action reset" onclick="resetCalc()">
+        Reset
+    </button>
+</div>
+
+<div id="result">
+Result: 0 shekles
+</div>
 
 </div>
 
 <script>
-function calc() {
-    let base = parseFloat(document.getElementById("crop").value);
-    let kg = parseFloat(document.getElementById("kg").value);
-    let mut = parseFloat(document.getElementById("mut").value);
+
+let selectedMutations = [];
+
+document.querySelectorAll(".mut-btn").forEach(btn => {
+
+    btn.addEventListener("click", () => {
+
+        btn.classList.toggle("active");
+
+        const value = Number(btn.dataset.value);
+
+        if(selectedMutations.includes(value)){
+            selectedMutations =
+                selectedMutations.filter(v => v !== value);
+        }
+        else{
+            selectedMutations.push(value);
+        }
+
+        updateSelected();
+    });
+
+});
+
+function updateSelected(){
+
+    if(selectedMutations.length === 0){
+        document.getElementById("selected").innerText =
+            "Selected Mutations: None";
+        return;
+    }
+
+    document.getElementById("selected").innerText =
+        "Selected Mutations: " +
+        selectedMutations.map(x => x + "x").join(", ");
+}
+
+function calc(){
+
+    let base =
+        parseFloat(document.getElementById("crop").value);
+
+    let kg =
+        parseFloat(document.getElementById("kg").value);
+
+    if(isNaN(kg) || kg <= 0){
+
+        document.getElementById("result").innerText =
+            "Enter a valid weight.";
+
+        return;
+    }
+
+    let mutationTotal = 1;
+
+    selectedMutations.forEach(m => {
+        mutationTotal += m;
+    });
 
     let units = kg / 0.01;
-    let raw = units * base * mut;
 
-    let result = Math.ceil(raw);
+    let value =
+        units *
+        base *
+        mutationTotal;
 
     document.getElementById("result").innerText =
-        "Result: " + result + " shekles";
+        "Result: " +
+        Math.ceil(value).toLocaleString() +
+        " shekles";
 }
+
+function resetCalc(){
+
+    document.getElementById("kg").value = "";
+
+    selectedMutations = [];
+
+    document.querySelectorAll(".mut-btn")
+        .forEach(btn => btn.classList.remove("active"));
+
+    updateSelected();
+
+    document.getElementById("result").innerText =
+        "Result: 0 shekles";
+}
+
 </script>
 
 </body>
