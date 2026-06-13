@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>GAG2 Calculator</title>
+
+<style>
+body {
+    font-family: Arial;
+    background: #0f172a;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.container {
+    background: #1e293b;
+    padding: 20px;
+    border-radius: 12px;
+    width: 320px;
+    box-shadow: 0 0 15px black;
+}
+
+h2 {
+    text-align: center;
+}
+
+input, select {
+    width: 100%;
+    padding: 8px;
+    margin: 6px 0;
+    border-radius: 6px;
+    border: none;
+}
+
+button {
+    width: 100%;
+    padding: 10px;
+    margin-top: 10px;
+    background: #22c55e;
+    border: none;
+    border-radius: 6px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #16a34a;
+}
+
+.result {
+    margin-top: 10px;
+    text-align: center;
+    font-size: 18px;
+}
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<h2>GAG2 Calculator</h2>
+
+<label>Crop</label>
+<select id="crop">
+    <option value="2">Bamboo</option>
+    <option value="22.44">Mushroom</option>
+</select>
+
+<label>KG</label>
+<input type="number" id="kg" step="0.01">
+
+<label>Mutation Multiplier</label>
+<input type="number" id="mut" step="0.01">
+
+<button onclick="calc()">Calculate</button>
+
+<div class="result" id="result">Result: </div>
+
+</div>
+
+<script>
+function calc() {
+    let base = parseFloat(document.getElementById("crop").value);
+    let kg = parseFloat(document.getElementById("kg").value);
+    let mut = parseFloat(document.getElementById("mut").value);
+
+    let units = kg / 0.01;
+    let raw = units * base * mut;
+
+    let result = Math.ceil(raw);
+
+    document.getElementById("result").innerText =
+        "Result: " + result + " shekles";
+}
+</script>
+
+</body>
+</html>
